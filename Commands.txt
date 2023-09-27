@@ -1,0 +1,41 @@
+Commands used to create certificate and key:
+
+1. generate a keypair for CA console
+
+openssl genrsa -out cakey.pem 2048
+
+2. generate a self-signed certificate for CA
+
+openssl req -x509 -new -nodes -key cakey.pem -days 365 -out ca.pem
+
+3. generate a keypair for server
+
+openssl genrsa -out serverkey.pem 2048
+
+4. generate a CSR for server
+
+openssl req -new -key serverkey.pem -out server.csr
+
+5. generate a certificate for server, signed by CA
+
+openssl x509 -req -CA ca.pem -CAkey cakey.pem -in server.csr -out server.pem -CAcreateserial
+
+6. generate a keypair for client
+
+openssl genrsa -out clientkey.pem 2048
+
+7. generate a CSR for client
+
+openssl req -new -key clientkey.pem -out client.csr
+
+8. generate a certificate for client, signed by CA
+
+openssl x509 -req -CA ca.pem -CAkey cakey.pem -in client.csr -out client.pem -CAcreateserial
+
+9. convert server key to der format
+
+openssl pkcs8 -nocrypt -topk8 -inform PEM -in serverkey.pem  -outform DER -out server-private.der
+
+10.  convert client key to der format
+
+openssl pkcs8 -nocrypt -topk8 -inform PEM -in clientkey.pem  -outform DER -out client-private.der
